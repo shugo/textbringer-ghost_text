@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 require_relative "ghost_text/version"
+require_relative "ghost_text/config"
+require_relative "ghost_text/commands"
 require "json"
 require "rack"
 require "thin"
@@ -65,16 +69,6 @@ module Textbringer
           [200, {'Content-Type' => 'application/json'}, [json]]
         end
       end
-    end
-  end
-end
-
-define_command(:ghost_text_start) do
-  background do
-    thin = Rack::Handler.get("thin")
-    thin.run(Textbringer::GhostText::App.new,
-             Host: "127.0.0.1", Port: 4001) do |server|
-      server.silent = true
     end
   end
 end
