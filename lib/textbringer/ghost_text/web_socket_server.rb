@@ -40,7 +40,6 @@ module Textbringer
                   buffer.insert(remote_text)
                   pos = data["selections"]&.dig(0, "start")
                   if pos
-                    message(pos)
                     byte_pos = remote_text[0, pos].bytesize
                     buffer.goto_char(byte_pos)
                   end
