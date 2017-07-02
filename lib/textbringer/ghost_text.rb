@@ -17,17 +17,31 @@ module Textbringer
             buffer = Buffer.new_buffer("*GhostText*")
             switch_to_buffer(buffer)
 
+            remote_text = nil
+
+            buffer.on_modified do
+              text = buffer.to_s
+              if text != remote_text
+                ws.send({"text" => text}.to_json)
+                remote_text = text
+              end
+            end
+
             ws.on :message do |event|
               data = JSON.parse(event.data)
               next_tick do
                 buffer.composite_edit do
+                  remote_text = data["text"]
                   buffer.delete_region(buffer.point_min, buffer.point_max)
-                  buffer.insert(data["text"])
+                  buffer.insert(remote_text)
                 end
               end
             end
 
             ws.on :close do |event|
+              next_tick do
+                kill_buffer(buffer)
+              end
               ws = nil
             end
           end
