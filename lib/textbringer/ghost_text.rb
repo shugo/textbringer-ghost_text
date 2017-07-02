@@ -22,7 +22,12 @@ module Textbringer
             buffer.on_modified do
               text = buffer.to_s
               if text != remote_text
-                ws.send({"text" => text}.to_json)
+                pos = buffer.substring(0, buffer.point).size
+                data = {
+                  "text" => text,
+                  "selections" => [{ "start" => pos, "end" => pos }]
+                }
+                ws.send(data.to_json)
                 remote_text = text
               end
             end
@@ -34,6 +39,12 @@ module Textbringer
                   remote_text = data["text"]
                   buffer.delete_region(buffer.point_min, buffer.point_max)
                   buffer.insert(remote_text)
+                  pos = data["selections"]&.dig(0, "start")
+                  if pos
+                    message(pos)
+                    byte_pos = remote_text[0, pos].bytesize
+                    buffer.goto_char(byte_pos)
+                  end
                 end
               end
             end
