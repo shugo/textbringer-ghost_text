@@ -1,28 +1,23 @@
-# Textbringer::GhostText
+# textbringer-ghost_text
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/textbringer/ghost_text`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+[GhostText](https://github.com/GhostText/GhostText) plugin for Textbringer.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+    $ gem install textbringer-ghost_text
+
+## Configuration
 
 ```ruby
-gem 'textbringer-ghost_text'
+# The host of the GhostText server.
+CONFIG[:ghost_text_host] = "127.0.0.1"
+# The port of the GhostText server.
+CONFIG[:ghost_text_port] = 4001
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install textbringer-ghost_text
 
 ## Usage
 
-TODO: Write usage instructions here
+Type `M-x ghost_text_start` to start the server.
 
 ## Development
 
@@ -32,10 +27,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/Shugo Maeda/textbringer-ghost_text.
+Bug reports and pull requests are welcome on GitHub at https://github.com/shugo/textbringer-ghost_text.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
