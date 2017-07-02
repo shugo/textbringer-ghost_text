@@ -40,7 +40,7 @@ module Textbringer
 
             ws.on :close do |event|
               next_tick do
-                kill_buffer(buffer)
+                kill_buffer(buffer, force: true)
               end
               ws = nil
             end
