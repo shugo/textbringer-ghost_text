@@ -29,7 +29,7 @@ module Textbringer
                   "text" => text,
                   "selections" => [{ "start" => pos, "end" => pos }]
                 }
-                ws.send(data.to_json)
+                ws&.send(data.to_json)
                 remote_text = text
               end
             end
