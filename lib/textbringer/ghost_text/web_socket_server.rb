@@ -60,7 +60,7 @@ module Textbringer
           ws.rack_response
         else
           json = {
-            "WebSocketPort" => 4001,
+            "WebSocketPort" => CONFIG[:ghost_text_port],
             "ProtocolVersion" => 1
           }.to_json
           [200, {'Content-Type' => 'application/json'}, [json]]
