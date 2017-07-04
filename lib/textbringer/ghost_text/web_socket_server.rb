@@ -12,7 +12,8 @@ module Textbringer
     class WebSocketServer
       def call(env)
         if Faye::WebSocket.websocket?(env)
-          ws = Faye::WebSocket.new(env)
+          ws = Faye::WebSocket.new(env, nil,
+                                   ping: CONFIG[:ghost_text_ping_interval])
 
           next_tick do
             buffer = Buffer.new_buffer("*GhostText*")
