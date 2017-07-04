@@ -9,7 +9,7 @@ Faye::WebSocket.load_adapter("thin")
 
 module Textbringer
   module GhostText
-    class WebSocketServer
+    class Server
       def call(env)
         if Faye::WebSocket.websocket?(env)
           accept_client(env)
