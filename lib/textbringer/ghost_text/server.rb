@@ -46,6 +46,10 @@ module Textbringer
               remote_text = text
             end
           end
+
+          buffer.on_killed do
+            ws&.close
+          end
           
           ws.on :message do |event|
             data = JSON.parse(event.data)
@@ -64,10 +68,10 @@ module Textbringer
           end
           
           ws.on :close do |event|
+            ws = nil
             next_tick do
               kill_buffer(buffer, force: true)
             end
-            ws = nil
           end
         end
         ws.rack_response
