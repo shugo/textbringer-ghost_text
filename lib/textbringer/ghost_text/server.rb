@@ -32,18 +32,16 @@ module Textbringer
           buffer = Buffer.new_buffer("*GhostText*")
           switch_to_buffer(buffer)
 
-          remote_text = nil
+          syncing_from_remote_text = false
 
           buffer.on_modified do
-            text = buffer.to_s
-            if text != remote_text
+            unless syncing_from_remote_text
               pos = buffer.substring(0, buffer.point).size
               data = {
-                "text" => text,
+                "text" => buffer.to_s,
                 "selections" => [{ "start" => pos, "end" => pos }]
               }
               ws&.send(data.to_json)
-              remote_text = text
             end
           end
 
@@ -54,15 +52,19 @@ module Textbringer
           ws.on :message do |event|
             data = JSON.parse(event.data)
             next_tick do
-              buffer.composite_edit do
-                remote_text = data["text"]
-                buffer.delete_region(buffer.point_min, buffer.point_max)
-                buffer.insert(remote_text)
-                pos = data["selections"]&.dig(0, "start")
-                if pos
-                  byte_pos = remote_text[0, pos].bytesize
-                  buffer.goto_char(byte_pos)
+              syncing_from_remote_text = true
+              begin
+                buffer.composite_edit do
+                  buffer.delete_region(buffer.point_min, buffer.point_max)
+                  buffer.insert(data["text"])
+                  pos = data["selections"]&.dig(0, "start")
+                  if pos
+                    byte_pos = data["text"][0, pos].bytesize
+                    buffer.goto_char(byte_pos)
+                  end
                 end
+              ensure
+                syncing_from_remote_text = false
               end
             end
           end
