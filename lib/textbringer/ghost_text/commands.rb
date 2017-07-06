@@ -3,7 +3,8 @@
 define_command(:ghost_text_start) do
   background do
     thin = Rack::Handler.get("thin")
-    thin.run(Textbringer::GhostText::Server.new,
+    app = Rack::ContentLength.new(Textbringer::GhostText::Server.new)
+    thin.run(app,
              Host: CONFIG[:ghost_text_host],
              Port: CONFIG[:ghost_text_port]) do |server|
       server.silent = true
