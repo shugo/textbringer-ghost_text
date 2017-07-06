@@ -42,6 +42,36 @@ module Textbringer
 
         syncing_from_remote_text = false
 
+        ws.on :message do |event|
+          data = JSON.parse(event.data)
+          next_tick do
+            syncing_from_remote_text = true
+            begin
+              buffer.composite_edit do
+                buffer.delete_region(buffer.point_min, buffer.point_max)
+                buffer.insert(data["text"])
+                if pos = data["selections"]&.dig(0, "start")
+                  byte_pos = data["text"][0, pos].bytesize
+                  buffer.goto_char(byte_pos)
+                end
+              end
+            ensure
+              syncing_from_remote_text = false
+            end
+            if (title = data['title']) && !title.empty?
+              buffer.name = "*GhostText:#{title}*"
+            end
+            switch_to_buffer(buffer)
+          end
+        end
+
+        ws.on :close do |event|
+          ws = nil
+          next_tick do
+            kill_buffer(buffer, force: true)
+          end
+        end
+
         buffer.on :modified do
           unless syncing_from_remote_text
             pos = buffer.substring(0, buffer.point).size
@@ -55,38 +85,6 @@ module Textbringer
 
         buffer.on :killed do
           ws&.close
-        end
-
-        ws.on :message do |event|
-          data = JSON.parse(event.data)
-          next_tick do
-            syncing_from_remote_text = true
-            begin
-              buffer.composite_edit do
-                buffer.delete_region(buffer.point_min, buffer.point_max)
-                buffer.insert(data["text"])
-                pos = data["selections"]&.dig(0, "start")
-                if pos
-                  byte_pos = data["text"][0, pos].bytesize
-                  buffer.goto_char(byte_pos)
-                end
-              end
-            ensure
-              syncing_from_remote_text = false
-            end
-            title = data['title']
-            if title && !title.empty?
-              buffer.name = "*GhostText:#{title}*"
-            end
-            switch_to_buffer(buffer)
-          end
-        end
-
-        ws.on :close do |event|
-          ws = nil
-          next_tick do
-            kill_buffer(buffer, force: true)
-          end
         end
       end
     end
