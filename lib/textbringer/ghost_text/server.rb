@@ -74,6 +74,10 @@ module Textbringer
             ensure
               syncing_from_remote_text = false
             end
+            title = data['title']
+            if title && !title.empty?
+              buffer.name = "*GhostText:#{title}*"
+            end
             switch_to_buffer(buffer)
           end
         end
