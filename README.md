@@ -1,5 +1,7 @@
 # textbringer-ghost_text
 
+[![Gem Version](https://badge.fury.io/rb/textbringer-ghost_text.svg)](https://badge.fury.io/rb/textbringer-ghost_text)
+
 [GhostText](https://github.com/GhostText/GhostText) plugin for Textbringer.
 
 ## Installation
