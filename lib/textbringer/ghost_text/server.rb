@@ -74,6 +74,7 @@ module Textbringer
             ensure
               syncing_from_remote_text = false
             end
+            switch_to_buffer(buffer)
           end
         end
 
