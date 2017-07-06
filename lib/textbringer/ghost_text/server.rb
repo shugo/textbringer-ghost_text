@@ -42,7 +42,7 @@ module Textbringer
 
         syncing_from_remote_text = false
 
-        buffer.on_modified do
+        buffer.on :modified do
           unless syncing_from_remote_text
             pos = buffer.substring(0, buffer.point).size
             data = {
@@ -53,7 +53,7 @@ module Textbringer
           end
         end
 
-        buffer.on_killed do
+        buffer.on :killed do
           ws&.close
         end
 
