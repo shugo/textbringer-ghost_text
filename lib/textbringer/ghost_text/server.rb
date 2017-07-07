@@ -27,12 +27,9 @@ module Textbringer
       def accept_client(env)
         ws = Faye::WebSocket.new(env, nil,
                                  ping: CONFIG[:ghost_text_ping_interval])
-        q = Queue.new
-        next_tick do
+        next_tick! do
           setup_buffer(ws)
-          q.push(:done)
         end
-        q.pop
         ws.rack_response
       end
 
