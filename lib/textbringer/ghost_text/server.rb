@@ -47,13 +47,10 @@ module Textbringer
           next_tick do
             syncing_from_remote_text = true
             begin
-              buffer.composite_edit do
-                buffer.delete_region(buffer.point_min, buffer.point_max)
-                buffer.insert(data["text"])
-                if pos = data["selections"]&.dig(0, "start")
-                  byte_pos = data["text"][0, pos].bytesize
-                  buffer.goto_char(byte_pos)
-                end
+              buffer.replace(data["text"])
+              if pos = data["selections"]&.dig(0, "start")
+                byte_pos = data["text"][0, pos].bytesize
+                buffer.goto_char(byte_pos)
               end
             ensure
               syncing_from_remote_text = false
