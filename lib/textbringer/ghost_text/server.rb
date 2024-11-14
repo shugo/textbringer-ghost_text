@@ -27,7 +27,7 @@ module Textbringer
       def accept_client(env)
         ws = Faye::WebSocket.new(env, nil,
                                  ping: CONFIG[:ghost_text_ping_interval])
-        next_tick! do
+        foreground! do
           setup_buffer(ws)
         end
         ws.rack_response
@@ -41,7 +41,7 @@ module Textbringer
 
         ws.on :message do |event|
           data = JSON.parse(event.data)
-          next_tick do
+          foreground do
             syncing_from_remote_text = true
             begin
               buffer.replace(data["text"])
@@ -61,7 +61,7 @@ module Textbringer
 
         ws.on :close do |event|
           ws = nil
-          next_tick do
+          foreground do
             kill_buffer(buffer, force: true)
           end
         end
